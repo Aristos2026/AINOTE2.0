@@ -55,6 +55,14 @@ URL and reads the code from standard input.
 
 **4. Check:** `claude --version` and `claude doctor`.
 
+## Notes: the official /ainote skill
+
+The installer also adds iFLYTEK's own Claude Code skill (https://github.com/iflyink/ainote), which
+reads and writes real AINOTE notes, folders, reminders and tasks through the app's local OpenModel
+API. Run `bash ~/.claude-ainote/scripts/ainote-api-check.sh` to see whether the tablet serves that
+API. Details, including the desktop-app requirement iFLYTEK documents, are in
+[docs/ainote-skill.md](docs/ainote-skill.md).
+
 ## Daily use
 
 ```bash
@@ -84,7 +92,8 @@ Termux side:
 
 Ubuntu side (all under the container's `/root`):
 
-- `curl`, `git`, `ripgrep`, `nano` and friends via apt.
+- `curl`, `git`, `ripgrep`, `python3`, `nano` and friends via apt.
+- iFLYTEK's `ainote` skill cloned into `~/.claude/skills/ainote`.
 - Claude Code at `~/.local/bin/claude` via `https://claude.ai/install.sh`.
 - `~/.claude/settings.json` from `config/settings.json`: stable update channel, reduced motion, no
   spinner tips, terminal bell (Termux turns it into a vibration), 80-column prose.
@@ -95,6 +104,7 @@ To remove everything: `bash ~/.claude-ainote/scripts/uninstall.sh --all`.
 
 ## More
 
+- [docs/ainote-skill.md](docs/ainote-skill.md): the official /ainote notes skill.
 - [docs/e-ink-tips.md](docs/e-ink-tips.md): screen, keyboard and battery tips.
 - [docs/troubleshooting.md](docs/troubleshooting.md): common errors and fixes.
 - [docs/alternative-native-termux.md](docs/alternative-native-termux.md): running the binary directly

@@ -49,6 +49,9 @@ for m in text/plain text/markdown application/vnd.openxmlformats-officedocument.
     | grep -oE 'packageName=[^ ]+' | sort -u | head -8 | tee -a "$REPORT"
 done
 
+section "AINOTE local API (needed by the /ainote skill)"
+bash "$(dirname "$0")/ainote-api-check.sh" 2>&1 | tee -a "$REPORT"
+
 section "Done"
 out "Full report saved to $REPORT"
 out "Send a screenshot of this output, or share the file (it is also at /sdcard if you run: cp $REPORT /sdcard/Download/)"

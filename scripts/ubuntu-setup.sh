@@ -22,7 +22,7 @@ export DEBIAN_FRONTEND=noninteractive
 log "Installing Ubuntu packages (curl, git, ripgrep, ...)"
 $SUDO apt-get update -q
 $SUDO apt-get install -y -q --no-install-recommends \
-  ca-certificates curl bash git ripgrep procps less nano \
+  ca-certificates curl bash git ripgrep procps less nano python3 \
   libstdc++6 libgcc-s1 tzdata locales
 
 # A UTF-8 locale keeps Claude Code's box-drawing characters intact.
@@ -62,6 +62,20 @@ if ! "$CLAUDE_BIN" config set -g theme light >/dev/null 2>&1; then
     printf '{\n  "theme": "light"\n}\n' > "$HOME/.claude.json"
   fi
 fi
+
+log "Installing iFLYTEK's official ainote skill (/ainote inside Claude Code)"
+# Source: https://github.com/iflyink/ainote - talks to the AINOTE app's local
+# OpenModel API (port 46588) to read and write real notes, folders and schedules.
+SKILL_URL="${AINOTE_SKILL_URL:-https://github.com/iflyink/ainote.git}"
+SKILL_DIR="$HOME/.claude/skills/ainote"
+mkdir -p "$HOME/.claude/skills"
+if [ -d "$SKILL_DIR/.git" ]; then
+  git -C "$SKILL_DIR" pull --ff-only || warn "Could not update the ainote skill; keeping the existing copy."
+else
+  rm -rf "$SKILL_DIR"
+  git clone --depth 1 "$SKILL_URL" "$SKILL_DIR"
+fi
+[ -f "$SKILL_DIR/SKILL.md" ] || warn "ainote skill not found at $SKILL_DIR after install."
 
 log "Verifying"
 "$CLAUDE_BIN" --version
