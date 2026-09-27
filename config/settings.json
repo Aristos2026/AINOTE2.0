@@ -1,0 +1,8 @@
+{
+  "autoUpdatesChannel": "stable",
+  "prefersReducedMotion": true,
+  "spinnerTipsEnabled": false,
+  "preferredNotifChannel": "terminal_bell",
+  "maxProseWidth": 80,
+  "cleanupPeriodDays": 14
+}
