@@ -19,10 +19,11 @@ Writes sync through your AINOTE account, so a note Claude creates appears on the
 
 ## Where the service runs
 
-According to iFLYTEK's announcement, the OpenModel API and its authorization link are features of the
-**AINOTE Desktop App for Windows and Mac, version 3.1.0.6 or later** (August 2026 update). The
-skill's own helper script only knows how to launch the Windows and macOS apps. Whether the Android
-app on the tablet also serves the API is not documented. Test it:
+iFLYTEK's announcement (August 2026, Desktop App v3.1.0.6) states that "AINOTE Skill is only
+supported on the PC desktop client (Windows & Mac AINOTE Desktop App) for authorization and setup".
+In the desktop app you choose a scope (Notes, Schedule) and export a Skill link, then install that
+link into Claude Code. The skill's helper script likewise only knows how to launch the Windows and
+macOS apps. The tablet app is not documented as serving the API. Test it anyway:
 
 ```bash
 bash ~/.claude-ainote/scripts/ainote-api-check.sh
