@@ -13,13 +13,9 @@ if [ -f "$PREFIX/bin/claude" ]; then
 fi
 
 if [ "${1:-}" = "--all" ]; then
-  rootfs="$PREFIX/var/lib/proot-distro/installed-rootfs"
-  for d in "$rootfs"/ubuntu*; do
-    [ -d "$d" ] || continue
-    name=$(basename "$d")
-    echo "Deleting Ubuntu container '$name' (this removes Claude Code, its login and settings)"
-    proot-distro remove "$name"
-  done
+  name="${AINOTE_DISTRO:-ubuntu}"
+  echo "Deleting Ubuntu container '$name' (this removes Claude Code, its login and settings)"
+  proot-distro remove "$name" || echo "Could not remove '$name'; run 'proot-distro list' to see container names." >&2
   echo "You can also delete the kit checkout: rm -rf ~/.claude-ainote"
 fi
 echo "Done."

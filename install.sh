@@ -77,37 +77,26 @@ fi
 [ -f "$KIT_DIR/scripts/ubuntu-setup.sh" ] || die "scripts/ubuntu-setup.sh not found in $KIT_DIR"
 
 # ---------------------------------------------------------------- Ubuntu container
-ROOTFS_DIR="$PREFIX/var/lib/proot-distro/installed-rootfs"
-DISTRO="${AINOTE_DISTRO:-}"
+# proot-distro has changed where it stores containers between releases, so never
+# look for a directory: ask proot-distro whether the container can be entered.
+DISTRO="${AINOTE_DISTRO:-ubuntu}"
 
-find_ubuntu() {
-  # Newer proot-distro names containers after the image (ubuntu, ubuntu-24.04, ...).
-  local d
-  for d in "$ROOTFS_DIR"/ubuntu*; do
-    if [ -d "$d" ]; then
-      basename "$d"
-      return
-    fi
-  done
+container_works() {
+  proot-distro login "$1" -- /bin/true >/dev/null 2>&1
 }
 
-if [ -z "$DISTRO" ]; then
-  DISTRO=$(find_ubuntu)
-fi
-
-if [ -n "$DISTRO" ]; then
+if container_works "$DISTRO"; then
   log "Ubuntu container '$DISTRO' already exists, reusing it"
 else
   log "Installing Ubuntu with proot-distro (downloads a few hundred MB)"
-  if proot-distro install ubuntu; then
-    :
-  elif proot-distro install ubuntu:24.04; then
-    :
-  else
+  if ! proot-distro install ubuntu && ! proot-distro install ubuntu:24.04; then
     die "proot-distro could not install Ubuntu. Run 'proot-distro list' to see available names and rerun with AINOTE_DISTRO=<name>."
   fi
-  DISTRO=$(find_ubuntu)
-  [ -n "$DISTRO" ] || die "Ubuntu installed but no rootfs found under $ROOTFS_DIR"
+  if ! container_works "$DISTRO"; then
+    echo "Installed containers according to proot-distro:" >&2
+    proot-distro list >&2 || true
+    die "Ubuntu installed but 'proot-distro login $DISTRO' fails. Rerun with AINOTE_DISTRO=<name from the list above>."
+  fi
 fi
 
 # ---------------------------------------------------------------- Claude Code inside Ubuntu

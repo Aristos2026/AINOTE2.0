@@ -76,8 +76,8 @@ Ubuntu, so `git clone` in Termux and `claude` in Ubuntu see the same checkout. R
 
 Termux side:
 
-- Installs the `proot-distro` and `git` packages and an Ubuntu container under
-  `$PREFIX/var/lib/proot-distro/installed-rootfs/`.
+- Installs the `proot-distro` and `git` packages and an Ubuntu container named `ubuntu`
+  (`proot-distro list` shows it).
 - Adds `$PREFIX/bin/claude` (from `scripts/claude-launcher.sh`).
 - Adds `~/.termux/termux.properties` with an Esc / Tab / Ctrl / arrow key row if you had none
   (from `config/termux.properties`).

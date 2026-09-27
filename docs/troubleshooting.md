@@ -18,6 +18,10 @@ Termux app.
 Termux's mirror may be unreachable. Run `termux-change-repo`, pick a different mirror group, then
 rerun the installer.
 
+**`Ubuntu installed but 'proot-distro login ubuntu' fails`**
+The container got a different name. Run `proot-distro list`, then
+`AINOTE_DISTRO=<name> bash ~/.claude-ainote/install.sh`.
+
 **`proot-distro could not install Ubuntu`**
 Check `proot-distro list` for the Ubuntu name your version offers, then
 `AINOTE_DISTRO=<name> bash ~/.claude-ainote/install.sh`. Very old proot-distro versions need
