@@ -16,13 +16,36 @@ for path in /open-model-note/health /open-model-schedule/health /open-model-comm
 done
 
 echo
-echo "== TCP ports something on this tablet is listening on"
-# /proc/net/tcp lists sockets in hex; state 0A is LISTEN.
-for f in /proc/net/tcp /proc/net/tcp6; do
-  [ -r "$f" ] || continue
-  awk 'NR>1 && $4=="0A" {split($2,a,":"); printf "%d\n", strtonum("0x" a[2])}' "$f" 2>/dev/null
-done | sort -n | uniq | tr '\n' ' '; echo
-echo "(if 46588 or another port belongs to AINOTE, the skill can use it: AINOTE_PORT=<port>)"
+echo "== Scanning every local port for anything that answers (takes up to a minute)"
+# Android hides /proc/net/tcp from apps, so ask each port directly instead.
+if command -v python3 >/dev/null 2>&1; then
+  python3 - <<'PYSCAN'
+import socket, concurrent.futures
+def probe(port):
+    s = socket.socket(); s.settimeout(0.25)
+    try:
+        return port if s.connect_ex(("127.0.0.1", port)) == 0 else None
+    finally:
+        s.close()
+with concurrent.futures.ThreadPoolExecutor(max_workers=200) as ex:
+    open_ports = sorted(p for p in ex.map(probe, range(1, 65536)) if p)
+print("open ports:", " ".join(map(str, open_ports)) or "none")
+for p in open_ports:
+    s = socket.socket(); s.settimeout(1)
+    try:
+        s.connect(("127.0.0.1", p))
+        s.sendall(b"GET /open-model-note/health HTTP/1.0\r\nHost: 127.0.0.1\r\n\r\n")
+        head = s.recv(300).decode("utf-8", "replace").replace("\r", "").split("\n")
+        print("  port %d: %s" % (p, head[0][:80]))
+    except Exception as e:
+        print("  port %d: no HTTP reply (%s)" % (p, type(e).__name__))
+    finally:
+        s.close()
+PYSCAN
+else
+  echo "python3 not available in Termux; run: pkg install -y python  and rerun."
+fi
+echo "(if a port replies with HTTP and JSON mentioning open-model, rerun with AINOTE_PORT=<port>)"
 
 echo
 echo "== iFLYTEK apps installed"
