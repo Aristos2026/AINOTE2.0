@@ -104,6 +104,7 @@ To remove everything: `bash ~/.claude-ainote/scripts/uninstall.sh --all`.
 
 ## More
 
+- [docs/from-scratch.md](docs/from-scratch.md): the complete step list, from a bare tablet to the Claude app.
 - [docs/remote-control.md](docs/remote-control.md): drive the tablet from the Claude app, auto-start at boot.
 - [docs/ainote-skill.md](docs/ainote-skill.md): the official /ainote notes skill.
 - [docs/e-ink-tips.md](docs/e-ink-tips.md): screen, keyboard and battery tips.
